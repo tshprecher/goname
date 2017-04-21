@@ -12,6 +12,8 @@ func TestName(t *testing.T) {
 		{"ONE_TWO_THREE", "OneTwoThree"},
 		{"one_two_three", "oneTwoThree"},
 		{"oneTwoThree", "oneTwoThree"},
+		{"ALLCAPS", "Allcaps"},
+		{"_", "_"},
 	}
 
 	for _, tst := range tests {

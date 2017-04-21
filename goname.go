@@ -34,34 +34,47 @@ type renameTarget struct {
 // rename takes a variable name and returns the name properly formatted. If no
 // change is necessary, the return value is the same as the input value.
 func rename(name string) string {
-	if name == "" {
-		return ""
+	if name == "" || name == "_" {
+		return name
 	}
 
 	terms := strings.Split(name, "_")
 	if len(terms) == 1 {
-		return name
-	}
-
-	for t := range terms {
-		rt := []rune(terms[t])
-		startCap := true
-		if t == 0 {
-			startCap = unicode.IsUpper(rt[0])
-		}
-		for r := range rt {
-			if r == 0 {
-				rt[r] = unicode.ToUpper(rt[r])
-				continue
+		allUpper := true
+		chars := []rune(name)
+		for c := range chars {
+			if !unicode.IsUpper(chars[c]) {
+				allUpper = false
 			}
-			rt[r] = unicode.ToLower(rt[r])
+			if c > 0 {
+				chars[c] = unicode.ToLower(chars[c])
+			}
 		}
-		if t == 0 && !startCap {
-			rt[0] = unicode.ToLower(rt[0])
+		if allUpper {
+			return string(chars)
 		}
-		terms[t] = string(rt)
+		return name
+	} else {
+		for t := range terms {
+			rt := []rune(terms[t])
+			startCap := true
+			if t == 0 {
+				startCap = unicode.IsUpper(rt[0])
+			}
+			for r := range rt {
+				if r == 0 {
+					rt[r] = unicode.ToUpper(rt[r])
+					continue
+				}
+				rt[r] = unicode.ToLower(rt[r])
+			}
+			if t == 0 && !startCap {
+				rt[0] = unicode.ToLower(rt[0])
+			}
+			terms[t] = string(rt)
+		}
+		return strings.Join(terms, "")
 	}
-	return strings.Join(terms, "")
 }
 
 // loadProgram loads a list of packages in the GOPATH
